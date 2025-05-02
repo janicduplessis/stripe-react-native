@@ -52,13 +52,13 @@ EOF
 )"
 
   if command -v hub >/dev/null 2>&1; then
-    create_github_release_fallback "$release_notes"
-  else
     local current_version=${version_and_date% -*}
     echo "Creating GitHub release for tag: v$current_version"
     echo ""
     echo -n "    "
     hub release create -em "$release_notes" "v$current_version"
+  else
+    create_github_release_fallback "$release_notes"
   fi
 }
 
