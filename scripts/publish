@@ -144,6 +144,7 @@ echo "Published to npm!"
 echo "Pushing git commit and tag"
 git push -u origin "$BRANCH_NAME" --follow-tags
 
+echo ""
 echo "Tag pushed! Please open a PR for your version bump: https://github.com/stripe/stripe-react-native/pulls"
 echo ""
 
