@@ -135,7 +135,7 @@ BRANCH_NAME=release-branch-$RANDOM
 git checkout -b "$BRANCH_NAME"
 
 echo "Bumping package.json $RELEASE_TYPE version and tagging commit"
-yarn -s version --"$RELEASE_TYPE"
+yarn version --"$RELEASE_TYPE"
 
 echo "Publishing release"
 # yarn -s --ignore-scripts publish --non-interactive --access=public
