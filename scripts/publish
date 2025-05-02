@@ -51,7 +51,7 @@ Please [see the changelog](https://github.com/stripe/stripe-react-native/blob/ma
 EOF
 )"
 
-  if which hub | grep -q "not found"; then
+  if command -v hub >/dev/null 2>&1; then
     create_github_release_fallback "$release_notes"
   else
     local current_version=${version_and_date% -*}
