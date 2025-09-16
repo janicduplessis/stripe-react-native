@@ -28,7 +28,6 @@ class GooglePayButtonView(
     }
     button = configureGooglePayButton()
     addView(button)
-    viewTreeObserver.addOnGlobalLayoutListener { requestLayout() }
   }
 
   private fun configureGooglePayButton(): PayButton {
@@ -42,6 +41,9 @@ class GooglePayButtonView(
       (this.parent as? View)?.performClick() ?: run {
         Log.e("StripeReactNative", "Unable to find parent of GooglePayButtonView.")
       }
+    }
+    googlePayButton.viewTreeObserver.addOnGlobalLayoutListener {
+      googlePayButton.layout(left, top, right, bottom)
     }
     return googlePayButton
   }
