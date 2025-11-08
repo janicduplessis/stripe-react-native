@@ -12,8 +12,6 @@ import com.facebook.react.uimanager.ViewGroupManager
 import com.facebook.react.uimanager.annotations.ReactProp
 import com.facebook.react.viewmanagers.EmbeddedPaymentElementViewManagerDelegate
 import com.facebook.react.viewmanagers.EmbeddedPaymentElementViewManagerInterface
-import com.reactnativestripesdk.PaymentSheetManager.Companion.buildCustomerConfiguration
-import com.reactnativestripesdk.PaymentSheetManager.Companion.buildGooglePayConfig
 import com.reactnativestripesdk.addresssheet.AddressSheetView
 import com.reactnativestripesdk.utils.PaymentSheetAppearanceException
 import com.reactnativestripesdk.utils.PaymentSheetException
@@ -139,7 +137,7 @@ class EmbeddedPaymentElementViewManager :
       }
 
     val googlePayConfig = buildGooglePayConfig(map.getMap("googlePay"))
-    val linkConfig = PaymentSheetManager.buildLinkConfig(map.getMap("link"))
+    val linkConfig = buildLinkConfig(map.getMap("link"))
     val shippingDetails =
       map.getMap("defaultShippingDetails")?.let {
         AddressSheetView.buildAddressDetails(it)
@@ -237,7 +235,7 @@ class EmbeddedPaymentElementViewManager :
   }
 
   private fun parseIntentConfiguration(map: ReadableMap): PaymentSheet.IntentConfiguration {
-    val intentConfig = PaymentSheetManager.buildIntentConfiguration(map)
+    val intentConfig = buildIntentConfiguration(map)
     return intentConfig ?: throw IllegalArgumentException("IntentConfiguration is null")
   }
 
