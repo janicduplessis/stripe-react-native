@@ -202,6 +202,99 @@ class PaymentElementConfigTest {
     buildIntentConfiguration(params)
   }
 
+  @Test
+  fun buildIntentConfigurationMode_PaymentMode_InvalidSetupFutureUsage_UsesNull() {
+    val params = readableMapOf(
+      "mode" to readableMapOf(
+        "amount" to 5000,
+        "currencyCode" to "usd",
+        "setupFutureUsage" to "Unknown"
+      )
+    )
+
+    val result = buildIntentConfiguration(params)
+
+    assertNotNull(result?.mode as? PaymentSheet.IntentConfiguration.Mode.Payment)
+  }
+
+  @Test
+  fun buildIntentConfigurationMode_PaymentMode_InvalidCaptureMethod_DefaultsToAutomatic() {
+    val params = readableMapOf(
+      "mode" to readableMapOf(
+        "amount" to 5000,
+        "currencyCode" to "usd",
+        "captureMethod" to "InvalidMethod"
+      )
+    )
+
+    val result = buildIntentConfiguration(params)
+
+    assertNotNull(result?.mode as? PaymentSheet.IntentConfiguration.Mode.Payment)
+  }
+
+  @Test
+  fun buildIntentConfigurationMode_PaymentMode_NullPaymentMethodOptions() {
+    val params = readableMapOf(
+      "mode" to readableMapOf(
+        "amount" to 5000,
+        "currencyCode" to "usd",
+        "paymentMethodOptions" to null
+      )
+    )
+
+    val result = buildIntentConfiguration(params)
+
+    assertNotNull(result?.mode as? PaymentSheet.IntentConfiguration.Mode.Payment)
+  }
+
+  @Test
+  fun buildIntentConfigurationMode_PaymentMode_EmptyPaymentMethodOptions() {
+    val params = readableMapOf(
+      "mode" to readableMapOf(
+        "amount" to 5000,
+        "currencyCode" to "usd",
+        "paymentMethodOptions" to readableMapOf(
+          "setupFutureUsageValues" to readableMapOf()
+        )
+      )
+    )
+
+    val result = buildIntentConfiguration(params)
+
+    assertNotNull(result?.mode as? PaymentSheet.IntentConfiguration.Mode.Payment)
+  }
+
+  @Test
+  fun buildIntentConfigurationMode_PaymentMode_InvalidPaymentMethodCodesInOptions() {
+    val params = readableMapOf(
+      "mode" to readableMapOf(
+        "amount" to 5000,
+        "currencyCode" to "usd",
+        "paymentMethodOptions" to readableMapOf(
+          "setupFutureUsageValues" to readableMapOf(
+            "invalid_code" to "OffSession",
+            "another_invalid" to "OnSession"
+          )
+        )
+      )
+    )
+
+    val result = buildIntentConfiguration(params)
+
+    assertNotNull(result?.mode as? PaymentSheet.IntentConfiguration.Mode.Payment)
+  }
+
+  @Test(expected = PaymentSheetException::class)
+  fun buildIntentConfigurationMode_SetupMode_InvalidSetupFutureUsage_ThrowsException() {
+    val params = readableMapOf(
+      "mode" to readableMapOf(
+        "setupFutureUsage" to "Unknown"
+      )
+    )
+
+    buildIntentConfiguration(params)
+  }
+
   // ============================================
   // buildLinkConfig Tests
   // ============================================
@@ -352,6 +445,73 @@ class PaymentElementConfigTest {
 
     assertNotNull(result)
     assertEquals("Total", result?.label)
+  }
+
+  @Test
+  fun buildGooglePayConfig_TestEnvNotProvided_DefaultsToFalse() {
+    val params = readableMapOf(
+      "merchantCountryCode" to "US",
+      "currencyCode" to "usd"
+    )
+
+    val result = buildGooglePayConfig(params)
+
+    assertNotNull(result)
+    assertEquals(PaymentSheet.GooglePayConfiguration.Environment.Production, result?.environment)
+  }
+
+  @Test
+  fun buildGooglePayConfig_EmptyMerchantCountryCode() {
+    val params = readableMapOf(
+      "merchantCountryCode" to "",
+      "currencyCode" to "usd",
+      "testEnv" to true
+    )
+
+    val result = buildGooglePayConfig(params)
+
+    assertNotNull(result)
+    assertEquals("", result?.countryCode)
+  }
+
+  @Test
+  fun buildGooglePayConfig_EmptyCurrencyCode() {
+    val params = readableMapOf(
+      "merchantCountryCode" to "US",
+      "currencyCode" to "",
+      "testEnv" to true
+    )
+
+    val result = buildGooglePayConfig(params)
+
+    assertNotNull(result)
+    assertEquals("", result?.currencyCode)
+  }
+
+  @Test
+  fun buildGooglePayConfig_MissingMerchantCountryCode() {
+    val params = readableMapOf(
+      "currencyCode" to "usd",
+      "testEnv" to true
+    )
+
+    val result = buildGooglePayConfig(params)
+
+    assertNotNull(result)
+    assertEquals("", result?.countryCode)
+  }
+
+  @Test
+  fun buildGooglePayConfig_MissingCurrencyCode() {
+    val params = readableMapOf(
+      "merchantCountryCode" to "US",
+      "testEnv" to true
+    )
+
+    val result = buildGooglePayConfig(params)
+
+    assertNotNull(result)
+    assertEquals("", result?.currencyCode)
   }
 
   @Test
